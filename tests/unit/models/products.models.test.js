@@ -5,7 +5,7 @@ const connection = require('../../../db/connection');
 const { productsModel } = require('../../../models');
 const { productsMock, emptyProductsMock } = require('../mocks/products.mock');
 
-describe.only('productsModel unit tests', function () {
+describe('productsModel unit tests', function () {
   describe('getAll', function () {
     it('should return an array of products', async function () {
       const stub = sinon.stub(connection, 'execute');
@@ -28,31 +28,6 @@ describe.only('productsModel unit tests', function () {
 
       expect(products).to.be.an('array');
       expect(products).to.be.empty;
-    });
-  });
-
-  describe('getById', function () {
-    describe('On success', function () {
-      it('should return an array with product data', async function () {
-        const stub = sinon.stub(connection, 'execute');
-        stub.resolves([productsMock[0]]);
-
-        const product = await productsModel.getById(1);
-
-        expect(product).to.be.deep.equal(productsMock[0]);
-      });
-    });
-
-    describe('On failure', function () {
-      it('should return an empty array', async function () {
-        const stub = sinon.stub(connection, 'execute');
-        stub.resolves([emptyProductsMock]);
-
-        const nonExistendProductId = 54820;
-        const product = await productsModel.getById(nonExistendProductId);
-
-        expect(product).to.be.deep.equal(emptyProductsMock);
-      });
     });
   });
 
