@@ -37,38 +37,42 @@ describe('productsService unit tests', function () {
   describe('getById', function () {
     describe('On Success', function () {
       it('should return an object with product data', async function () {
-        sinon.stub(productsModel, 'getById').resolves({
-          type: null,
-          message: productsMock[0],
-        });
+        sinon.stub(productsModel, 'getById').resolves([
+          {
+            id: 1,
+            name: 'Product 1',
+          },
+        ]);
 
-        const product = await productsModel.getById(1);
+        const product = await productsService.getById(1);
 
         expect(product).to.be.an('object');
         expect(product).to.have.all.keys(['type', 'message']);
         expect(product).to.have.property('type', null);
-        expect(product).to.have.property('message', productsMock[0]);
+        expect(product.message).to.be.deep.equal({
+          id: 1,
+          name: 'Product 1',
+        });
+
+        sinon.restore();
+      });
+
+      afterEach(function () {
+        sinon.restore();
       });
     });
 
     describe('On Failure', function () {
       it('should return an object pointing out that product was not found', async function () {
-        sinon.stub(productsModel, 'getById').resolves({
-          type: 'notFound',
-          message: 'Product not found',
-        });
+        sinon.stub(productsModel, 'getById').resolves([]);
 
-        const product = await productsModel.getById(45303);
+        const product = await productsService.getById(45303);
 
         expect(product).to.be.an('object');
         expect(product).to.have.all.keys(['type', 'message']);
         expect(product).to.have.property('type', 'notFound');
         expect(product).to.have.property('message', 'Product not found');
       });
-    });
-
-    afterEach(function () {
-      sinon.restore();
     });
   });
 
