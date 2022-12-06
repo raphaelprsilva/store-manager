@@ -71,4 +71,92 @@ describe('productsService unit tests', function () {
       sinon.restore();
     });
   });
+
+  describe('create', function () {
+    describe('On Success', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(productsModel, 'create').resolves({
+          id: 42,
+          name: 'Product 42',
+        });
+
+        const product = await productsService.create({ name: 'Product 42' });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', null);
+        expect(product.message).to.be.deep.equal({
+          id: 42,
+          name: 'Product 42',
+        });
+      });
+    });
+
+    describe('On Failure', function () {
+      it('should return an object when "name" is wrong', async function () {
+        sinon.stub(productsModel, 'create').resolves({
+          type: 'notCreated',
+          message: 'Product not created',
+        });
+
+        const product = await productsService.create({
+          wrongKey: 'Product 42',
+        });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'BAD_REQUEST');
+        expect(product).to.have.property('message', '"name" is required');
+      });
+
+      it('should return an object when "name" is not given', async function () {
+        sinon.stub(productsModel, 'create').resolves({
+          type: 'notCreated',
+          message: 'Product not created',
+        });
+
+        const product = await productsService.create({});
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'BAD_REQUEST');
+        expect(product).to.have.property('message', '"name" is required');
+      });
+
+      it('should return an object when "name" is not a string', async function () {
+        sinon.stub(productsModel, 'create').resolves({
+          type: 'notCreated',
+          message: 'Product not created',
+        });
+
+        const product = await productsService.create({ name: 42 });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'BAD_REQUEST');
+        expect(product).to.have.property('message', '"name" must be a string');
+      });
+
+      it('should return an object when "name" is an empty string', async function () {
+        sinon.stub(productsModel, 'create').resolves({
+          type: 'notCreated',
+          message: 'Product not created',
+        });
+
+        const product = await productsService.create({ name: '' });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'INVALID_VALUE');
+        expect(product).to.have.property(
+          'message',
+          '"name" is not allowed to be empty'
+        );
+      });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
 });
