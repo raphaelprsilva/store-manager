@@ -13,7 +13,17 @@ const getById = async (id) => {
   return product;
 };
 
+const create = async (productData) => {
+  const [resultProduct] = await connection.execute(
+    'INSERT INTO products (name) VALUE (?)',
+    [productData.name],
+  );
+
+  return { id: resultProduct.insertId, name: productData.name };
+};
+
 module.exports = {
   getAll,
   getById,
+  create,
 };
