@@ -33,4 +33,42 @@ describe('productsService unit tests', function () {
       sinon.restore();
     });
   });
+
+  describe('getById', function () {
+    describe('On Success', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(productsModel, 'getById').resolves({
+          type: null,
+          message: productsMock[0],
+        });
+
+        const product = await productsModel.getById(1);
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', null);
+        expect(product).to.have.property('message', productsMock[0]);
+      });
+    });
+
+    describe('On Failure', function () {
+      it('should return an object pointing out that product was not found', async function () {
+        sinon.stub(productsModel, 'getById').resolves({
+          type: 'notFound',
+          message: 'Product not found',
+        });
+
+        const product = await productsModel.getById(45303);
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'notFound');
+        expect(product).to.have.property('message', 'Product not found');
+      });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
 });
