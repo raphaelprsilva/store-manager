@@ -72,6 +72,30 @@ describe('productsModel unit tests', function () {
     });
   });
 
+  describe('getByName', function () {
+    describe('When product does exists', function () {
+      it('should return an array with product data', async function () {
+        sinon.stub(connection, 'execute').resolves([[productsMock[0]]]);
+
+        const product = await productsModel.getByName('Produto 1');
+
+        expect(product).to.be.an('array');
+        expect(product).to.have.lengthOf(1);
+      });
+    });
+
+    describe('When product does not exists', function () {
+      it('should return an array with product data', async function () {
+        sinon.stub(connection, 'execute').resolves([[]]);
+
+        const product = await productsModel.getByName('Produto 1');
+
+        expect(product).to.be.an('array');
+        expect(product).to.have.lengthOf(0);
+      });
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
