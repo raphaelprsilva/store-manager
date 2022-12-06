@@ -13,6 +13,14 @@ const getById = async (id) => {
   return product;
 };
 
+const getByName = async (name) => {
+  const [product] = await connection.execute(
+    'SELECT * FROM products WHERE name = ?',
+    [name],
+  );
+  return product;
+};
+
 const create = async (productData) => {
   const [resultProduct] = await connection.execute(
     'INSERT INTO products (name) VALUE (?)',
@@ -26,4 +34,5 @@ module.exports = {
   getAll,
   getById,
   create,
+  getByName,
 };
