@@ -55,6 +55,23 @@ describe('productsModel unit tests', function () {
     });
   });
 
+  describe('create', function () {
+    describe('When product is successfully created', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(connection, 'execute').resolves([{ insertId: 42 }]);
+
+        const newProductCreated = await productsModel.create({
+          name: 'Produto X',
+        });
+
+        expect(newProductCreated).to.be.deep.equal({
+          id: 42,
+          name: 'Produto X',
+        });
+      });
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
