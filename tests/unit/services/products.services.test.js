@@ -97,6 +97,22 @@ describe('productsService unit tests', function () {
     });
 
     describe('On Failure', function () {
+      it('should return an object when product already exists', async function () {
+        sinon.stub(productsModel, 'getByName').resolves([
+          {
+            id: 1,
+            message: 'Product 42',
+          },
+        ]);
+
+        const product = await productsService.create({ name: 'Product 42' });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'ALREADY_EXISTS');
+        expect(product).to.have.property('message', 'Product already exists');
+      });
+
       it('should return an object when "name" is wrong', async function () {
         sinon.stub(productsModel, 'create').resolves({
           type: 'notCreated',
