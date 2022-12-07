@@ -98,4 +98,98 @@ describe('productsController unit tests', function () {
       sinon.restore();
     });
   });
+
+  describe('create', function () {
+    describe('When product is created', function () {
+      it('should return a response with status 201 and product data', async function () {
+        const req = {};
+        const res = {};
+
+        req.body = sinon.stub().returns({ name: 'Test Product' });
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+
+        sinon.stub(productsService, 'create').resolves({
+          type: null,
+          message: productsMock[0],
+        });
+
+        await productsController.create(req, res);
+
+        expect(res.status).to.have.been.calledWith(201);
+        expect(res.json).to.have.been.calledWith(productsMock[0]);
+      });
+    });
+
+    describe('When product is not created', function () {
+      it('should return a response with status 422 and message indicating that', async function () {
+        const req = {};
+        const res = {};
+
+        req.body = sinon.stub().returns({ name: '' });
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+
+        sinon.stub(productsService, 'create').resolves({
+          type: 'INVALID_VALUE',
+          message: '"name" is not allowed to be empty',
+        });
+
+        await productsController.create(req, res);
+
+        expect(res.status).to.have.been.calledWith(422);
+        expect(res.json).to.have.been.calledWith({
+          message: '"name" is not allowed to be empty',
+        });
+
+        sinon.restore();
+      });
+
+      it('should return a response with status 409 and message indicating that', async function () {
+        const req = {};
+        const res = {};
+
+        req.body = sinon.stub().returns({ name: 'Test Product' });
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+
+        sinon.stub(productsService, 'create').resolves({
+          type: 'ALREADY_EXISTS',
+          message: 'Product already exists',
+        });
+
+        await productsController.create(req, res);
+
+        expect(res.status).to.have.been.calledWith(409);
+        expect(res.json).to.have.been.calledWith({
+          message: 'Product already exists',
+        });
+      });
+
+      it('should return a response with status 500 and message indicating that', async function () {
+        const req = {};
+        const res = {};
+
+        req.body = sinon.stub().returns({ name: 'Test Product' });
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+
+        sinon.stub(productsService, 'create').resolves({
+          type: 'serverError',
+          message: 'Internal server error',
+        });
+
+        await productsController.create(req, res);
+
+        expect(res.status).to.have.been.calledWith(500);
+        expect(res.json).to.have.been.calledWith({
+          message: 'Internal server error',
+        });
+      });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
 });
