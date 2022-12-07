@@ -22,6 +22,12 @@ const create = async (productData) => {
   const validationResult = validateRequestProductSchema(productData);
   if (validationResult.type) return validationResult;
 
+  const productAlreadyExists = await productsModel.getByName(productData.name);
+
+  if (productAlreadyExists.length) {
+    return { type: 'ALREADY_EXISTS', message: 'Product already exists' };
+  }
+
   const newProductCreated = await productsModel.create(productData);
 
   return { type: null, message: newProductCreated };
