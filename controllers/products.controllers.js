@@ -1,4 +1,5 @@
 const { productsService } = require('../services');
+const errorMap = require('../utils/errorMap');
 
 const getAll = async (_req, res) => {
   const products = await productsService.getAll();
@@ -17,7 +18,22 @@ const getById = async (req, res) => {
   return res.status(200).json(message);
 };
 
+const create = async (req, res) => {
+  const { name } = req.body;
+  const productData = { name };
+  const { type, message } = await productsService.create(productData);
+  console.log('🚀 ~ file: products.controllers.js:25 ~ message', message);
+  console.log('🚀 ~ file: products.controllers.js:25 ~ type', type);
+
+  if (type) {
+    return res.status(errorMap.mapError(type)).json({ message });
+  }
+
+  return res.status(201).json(message);
+};
+
 module.exports = {
   getAll,
   getById,
+  create,
 };
