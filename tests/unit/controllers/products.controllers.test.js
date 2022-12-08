@@ -5,6 +5,7 @@ const sinonChai = require('sinon-chai');
 const { expect } = chai;
 chai.use(sinonChai);
 
+const { productsModel } = require('../../../models');
 const { productsService } = require('../../../services');
 const { productsController } = require('../../../controllers');
 
@@ -186,6 +187,65 @@ describe('productsController unit tests', function () {
           message: 'Internal server error',
         });
       });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
+
+  describe('update', function () {
+    it('should return a response with status 200 and a JSON with the updated sale', async function () {
+      const req = {};
+      const res = {};
+
+      req.params = { id: 1 };
+      req.body = sinon.stub().returns({});
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsService, 'update').resolves({
+        type: null,
+        message: {
+          id: 1,
+          name: 'Product 1',
+        },
+      });
+
+      await productsController.update(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({
+        id: 1,
+        name: 'Product 1',
+      });
+
+      sinon.restore();
+    });
+
+    it('should return a response with status 404 and a JSON with the error message', async function () {
+      const req = {};
+      const res = {};
+
+      req.params = { id: 42 };
+      req.body = sinon.stub().returns({});
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsModel, 'getById').resolves(null);
+      sinon.stub(productsService, 'update').resolves({
+        type: 'PRODUCT_NOT_FOUND',
+        message: 'Product not found',
+      });
+
+      await productsController.update(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({
+        message: 'Product not found',
+      });
+
+      sinon.restore();
     });
 
     afterEach(function () {
