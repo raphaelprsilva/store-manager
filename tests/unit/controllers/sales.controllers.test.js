@@ -5,8 +5,8 @@ const sinonChai = require('sinon-chai');
 const { expect } = chai;
 chai.use(sinonChai);
 
-const { productsService, salesService } = require('../../../services');
-const { productsController, salesController } = require('../../../controllers');
+const { salesService } = require('../../../services');
+const { salesController } = require('../../../controllers');
 
 describe('salesController unit tests', function () {
   describe('create', function () {
@@ -66,6 +66,49 @@ describe('salesController unit tests', function () {
       expect(res.json).to.have.been.calledWith({
         message: 'Product not found',
       });
+
+      sinon.restore();
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
+
+  describe('getAll', function () {
+    it('should return a response with status 200 and a JSON with all sales', async function () {
+      const req = {};
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(salesService, 'getAll').resolves([
+        {
+          id: 1,
+          itensSold: [
+            {
+              productId: 1,
+              quantity: 2,
+            },
+          ],
+        },
+      ]);
+
+      await salesController.getAll(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith([
+        {
+          id: 1,
+          itensSold: [
+            {
+              productId: 1,
+              quantity: 2,
+            },
+          ],
+        },
+      ]);
 
       sinon.restore();
     });
