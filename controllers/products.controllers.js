@@ -22,8 +22,6 @@ const create = async (req, res) => {
   const { name } = req.body;
   const productData = { name };
   const { type, message } = await productsService.create(productData);
-  console.log('🚀 ~ file: products.controllers.js:25 ~ message', message);
-  console.log('🚀 ~ file: products.controllers.js:25 ~ type', type);
 
   if (type) {
     return res.status(errorMap.mapError(type)).json({ message });
