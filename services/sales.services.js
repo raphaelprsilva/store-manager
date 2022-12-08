@@ -21,15 +21,25 @@ const create = async (sale) => {
 
   const { id } = await salesModel.create();
 
-  const salesPromise = sale.map(
-    (s) => salesModel.insert({ saleId: id, ...s }),
-  );
+  const salesPromise = sale.map((s) => salesModel.insert({ saleId: id, ...s }));
 
   await Promise.all(salesPromise);
 
   return { type: null, message: { id, itemsSold: sale } };
 };
 
+const getAll = async () => {
+  const sales = await salesModel.getAll();
+
+  const sortedSalesBySaleId = sales.sort((a, b) => a.saleId - b.saleId);
+  const sortedSalesByProductId = sortedSalesBySaleId.sort(
+    (a, b) => a.productId - b.productId,
+  );
+
+  return sortedSalesByProductId;
+};
+
 module.exports = {
   create,
+  getAll,
 };
