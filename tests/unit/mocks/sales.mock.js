@@ -13,6 +13,13 @@ const salesMock = [
   },
 ];
 
+const saleMock = {
+  saleId: 1,
+  date: '2021-09-01T00:00:00.000Z',
+  productId: 1,
+  quantity: 1,
+};
+
 const salesMockNotSorted = [
   {
     saleId: 2,
@@ -50,4 +57,5 @@ module.exports = {
   emptySalesMock,
   salesMockNotSorted,
   salesMockSorted,
+  saleMock,
 };
