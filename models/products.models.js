@@ -30,9 +30,19 @@ const create = async (productData) => {
   return { id: resultProduct.insertId, name: productData.name };
 };
 
+const update = async (id, productData) => {
+  await connection.execute(
+    'UPDATE products SET name = ? WHERE id = ?',
+    [productData.name, id],
+  );
+
+  return { id: +id, name: productData.name };
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   getByName,
+  update,
 };
