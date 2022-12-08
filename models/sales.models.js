@@ -27,8 +27,21 @@ const getAll = async () => {
   return sales;
 };
 
+const getById = async (id) => {
+  const [sale] = await connection.execute(
+    `SELECT date, product_id AS productId, quantity FROM sales_products
+        JOIN sales
+          ON (sales.id = sales_products.sale_id)
+        WHERE sale_id = ?`,
+    [id],
+  );
+
+  return sale;
+};
+
 module.exports = {
   insert,
   create,
   getAll,
+  getById,
 };
