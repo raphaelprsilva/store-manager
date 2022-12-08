@@ -3,6 +3,7 @@ const sinon = require('sinon');
 
 const { salesModel } = require('../../../models');
 const { salesService } = require('../../../services');
+const { salesMockNotSorted, salesMockSorted } = require('../mocks/sales.mock');
 
 describe('salesService unit tests', function () {
   describe('create', function () {
@@ -79,7 +80,21 @@ describe('salesService unit tests', function () {
       expect(sale).to.be.an('object');
       expect(sale).to.have.all.keys(['type', 'message']);
       expect(sale).to.have.property('type', 'INVALID_VALUE');
-      expect(sale.message).to.be.deep.equal('"quantity" must be greater than or equal to 1');
+      expect(sale.message).to.be.deep.equal(
+        '"quantity" must be greater than or equal to 1'
+      );
+    });
+  });
+
+  describe('getAll', function () {
+    it('should return an array with all sales sorted', async function () {
+      sinon.stub(salesModel, 'getAll').resolves(salesMockNotSorted);
+
+      const sales = await salesService.getAll();
+
+      expect(sales).to.be.an('array');
+      expect(sales).to.have.lengthOf(2);
+      expect(sales).to.be.deep.equal(salesMockSorted);
     });
   });
 
