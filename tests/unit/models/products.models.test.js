@@ -96,6 +96,23 @@ describe('productsModel unit tests', function () {
     });
   });
 
+  describe('update', function () {
+    describe('When product is successfully updated', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(connection, 'execute').resolves();
+
+        const productUpdated = await productsModel.update(42, {
+          name: 'Produto X',
+        });
+
+        expect(productUpdated).to.be.deep.equal({
+          id: 42,
+          name: 'Produto X',
+        });
+      });
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
