@@ -50,6 +50,8 @@ const salesMockSorted = [
   },
 ];
 
+const inexistentSaleId = 42;
+
 const emptySalesMock = [];
 
 module.exports = {
@@ -58,4 +60,5 @@ module.exports = {
   salesMockNotSorted,
   salesMockSorted,
   saleMock,
+  inexistentSaleId,
 };

@@ -3,7 +3,7 @@ const sinon = require('sinon');
 
 const { salesModel } = require('../../../models');
 const { salesService } = require('../../../services');
-const { salesMockNotSorted, salesMockSorted } = require('../mocks/sales.mock');
+const { salesMockNotSorted, salesMockSorted, saleMock, inexistentSaleId, emptySalesMock } = require('../mocks/sales.mock');
 
 describe('salesService unit tests', function () {
   describe('create', function () {
@@ -95,6 +95,30 @@ describe('salesService unit tests', function () {
       expect(sales).to.be.an('array');
       expect(sales).to.have.lengthOf(2);
       expect(sales).to.be.deep.equal(salesMockSorted);
+    });
+  });
+
+  describe('getById', function () {
+    it('should return an object with the sale data', async function () {
+      sinon.stub(salesModel, 'getById').resolves([saleMock]);
+
+      const sale = await salesService.getById(1);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', null);
+      expect(sale.message).to.be.deep.equal([saleMock]);
+    });
+
+    it('should return an object with the error message', async function () {
+      sinon.stub(salesModel, 'getById').resolves(emptySalesMock);
+
+      const sale = await salesService.getById(inexistentSaleId);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', 'SALE_NOT_FOUND');
+      expect(sale.message).to.be.deep.equal('Sale not found');
     });
   });
 
