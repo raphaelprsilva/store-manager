@@ -41,7 +41,6 @@ const getAll = async () => {
 
 const getById = async (id) => {
   const sale = await salesModel.getById(id);
-  console.log('🚀 ~ file: sales.services.js:44 ~ sale', sale);
   const saleSize = sale.length;
 
   if (!saleSize) return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
