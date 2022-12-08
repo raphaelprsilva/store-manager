@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const connection = require('../../../db/connection');
 const { salesModel } = require('../../../models');
 
-const { salesMock, emptySalesMock } = require('../mocks/sales.mock');
+const { salesMock, emptySalesMock, saleMock } = require('../mocks/sales.mock');
 
 describe('salesModel unit tests', function () {
   describe('create', function () {
@@ -94,6 +94,41 @@ describe('salesModel unit tests', function () {
 
         expect(sales).to.be.an('array');
         expect(sales).to.be.empty;
+      });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
+
+  describe('getById', function () {
+    describe('When sale is successfully retrieved', function () {
+      it('should return an object with sale data', async function () {
+        const stub = sinon.stub(connection, 'execute');
+        stub.resolves([[saleMock]]);
+
+        const sale = await salesModel.getById(1);
+
+        expect(sale).to.be.an('array');
+        expect(sale).to.have.lengthOf(1);
+        expect(sale).to.be.deep.equal([saleMock]);
+      });
+
+      afterEach(function () {
+        sinon.restore();
+      });
+    });
+
+    describe('When sale is not successfully retrieved', function () {
+      it('should return an empty array', async function () {
+        const stub = sinon.stub(connection, 'execute');
+        stub.resolves([emptySalesMock]);
+
+        const sale = await salesModel.getById(1);
+
+        expect(sale).to.be.an('array');
+        expect(sale).to.be.empty;
       });
     });
 
