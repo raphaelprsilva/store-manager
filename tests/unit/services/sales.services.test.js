@@ -3,7 +3,13 @@ const sinon = require('sinon');
 
 const { salesModel } = require('../../../models');
 const { salesService } = require('../../../services');
-const { salesMockNotSorted, salesMockSorted, saleMock, inexistentSaleId, emptySalesMock } = require('../mocks/sales.mock');
+const {
+  salesMockNotSorted,
+  salesMockSorted,
+  saleMock,
+  inexistentSaleId,
+  emptySalesMock,
+} = require('../mocks/sales.mock');
 
 describe('salesService unit tests', function () {
   describe('create', function () {
@@ -83,6 +89,10 @@ describe('salesService unit tests', function () {
       expect(sale.message).to.be.deep.equal(
         '"quantity" must be greater than or equal to 1'
       );
+    });
+
+    afterEach(function () {
+      sinon.restore();
     });
   });
 
