@@ -179,4 +179,69 @@ describe('productsService unit tests', function () {
       sinon.restore();
     });
   });
+
+  describe('update', function () {
+    describe('On Success', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(productsModel, 'update').resolves({
+          id: 42,
+          name: 'Product 42',
+        });
+        sinon.stub(productsModel, 'getById').resolves([
+          {
+            id: 42,
+            name: 'Product 42',
+          },
+        ]);
+
+
+        const product = await productsService.update(42, {
+          name: 'Product 42',
+        });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', null);
+        expect(product.message).to.be.deep.equal({
+          id: 42,
+          name: 'Product 42',
+        });
+      });
+
+      afterEach(function () {
+        sinon.restore();
+      })
+    });
+
+    describe('On Failure', function () {
+      it('should return an object when product does not exist', async function () {
+        sinon.stub(productsModel, 'getById').resolves([]);
+
+        const product = await productsService.update(999, {
+          name: 'Product 999',
+        });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'PRODUCT_NOT_FOUND');
+        expect(product).to.have.property('message', 'Product not found');
+      });
+
+      it('should return an object when "name" is wrong', async function () {
+        sinon.stub(productsModel, 'update').resolves({
+          type: 'notUpdated',
+          message: 'Product not updated',
+        });
+
+        const product = await productsService.update(42, {
+          wrongKey: 'Product 42',
+        });
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'BAD_REQUEST');
+        expect(product).to.have.property('message', '"name" is required');
+      });
+    });
+  });
 });
