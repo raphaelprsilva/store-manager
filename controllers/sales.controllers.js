@@ -13,6 +13,13 @@ const create = async (req, res) => {
   res.status(201).json(message);
 };
 
+const getAll = async (_req, res) => {
+  const sales = await salesService.getAll();
+
+  res.status(200).json(sales);
+};
+
 module.exports = {
   create,
+  getAll,
 };
