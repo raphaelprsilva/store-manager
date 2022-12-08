@@ -33,8 +33,25 @@ const create = async (productData) => {
   return { type: null, message: newProductCreated };
 };
 
+const update = async (id, productData) => {
+  const validationResult = validateRequestProductSchema(productData);
+
+  if (validationResult.type) return validationResult;
+
+  const productAlreadyExists = await productsModel.getById(id);
+
+  if (!productAlreadyExists.length) {
+    return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+  }
+
+  const productUpdated = await productsModel.update(id, productData);
+
+  return { type: null, message: productUpdated };
+};
+
 module.exports = {
   getAll,
   getById,
   create,
+  update,
 };
