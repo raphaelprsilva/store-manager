@@ -1,8 +1,9 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 
-const { salesModel } = require('../../../models');
+const { salesModel, productsModel } = require('../../../models');
 const { salesService } = require('../../../services');
+const { productsMock } = require('../mocks/products.mock');
 const {
   salesMockNotSorted,
   salesMockSorted,
@@ -14,6 +15,7 @@ const {
 describe('salesService unit tests', function () {
   describe('create', function () {
     it('should return an object with the sale data', async function () {
+      sinon.stub(productsModel, 'getById').resolves(productsMock);
       sinon.stub(salesModel, 'create').resolves({ id: 1 });
       sinon.stub(salesModel, 'insert').resolves();
 
