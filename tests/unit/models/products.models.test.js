@@ -113,6 +113,20 @@ describe('productsModel unit tests', function () {
     });
   });
 
+  describe('remove', function () {
+    describe('When product is successfully removed', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(connection, 'execute').resolves();
+
+        const productRemoved = await productsModel.remove(42);
+
+        expect(productRemoved).to.be.undefined;
+
+        sinon.restore();
+      });
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
