@@ -136,4 +136,25 @@ describe('salesModel unit tests', function () {
       sinon.restore();
     });
   });
+
+  describe('update', function () {
+    describe('When sale is successfully updated', function () {
+      it('should return an object with sale data', async function () {
+        const stub = sinon.stub(connection, 'execute');
+        stub.resolves([{}]);
+
+        const sale = await salesModel.update(1, {
+          productId: 1,
+          quantity: 10,
+        });
+
+        expect(sale).to.be.an('object');
+        expect(sale).to.be.empty;
+      });
+
+      afterEach(function () {
+        sinon.restore();
+      });
+    });
+  });
 });
