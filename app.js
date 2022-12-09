@@ -13,4 +13,8 @@ app.get('/', (_request, response) => {
 app.use('/products', productsRouter);
 app.use('/sales', salesRouter);
 
+app.use('/*', (_request, response) => {
+  response.status(404).json({ message: 'Not found' });
+});
+
 module.exports = app;
