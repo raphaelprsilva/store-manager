@@ -72,6 +72,12 @@ describe('productsService unit tests', function () {
         expect(product).to.have.all.keys(['type', 'message']);
         expect(product).to.have.property('type', 'notFound');
         expect(product).to.have.property('message', 'Product not found');
+
+        sinon.restore();
+      });
+
+      afterEach(function () {
+        sinon.restore();
       });
     });
   });
@@ -194,7 +200,6 @@ describe('productsService unit tests', function () {
           },
         ]);
 
-
         const product = await productsService.update(42, {
           name: 'Product 42',
         });
@@ -210,7 +215,7 @@ describe('productsService unit tests', function () {
 
       afterEach(function () {
         sinon.restore();
-      })
+      });
     });
 
     describe('On Failure', function () {
@@ -241,6 +246,52 @@ describe('productsService unit tests', function () {
         expect(product).to.have.all.keys(['type', 'message']);
         expect(product).to.have.property('type', 'BAD_REQUEST');
         expect(product).to.have.property('message', '"name" is required');
+      });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
+
+  describe('remove', function () {
+    describe('On Success', function () {
+      it('should return an object with product data', async function () {
+        sinon.stub(productsModel, 'getById').resolves([
+          {
+            id: 42,
+            name: 'Product 42',
+          },
+        ]);
+        sinon.stub(productsModel, 'remove').resolves();
+
+        const product = await productsService.remove(42);
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', null);
+        expect(product.message).to.be.deep.equal('Product deleted');
+      });
+
+      afterEach(function () {
+        sinon.restore();
+      });
+    });
+
+    describe('On Failure', function () {
+      it('should return an object when product does not exist', async function () {
+        sinon.stub(productsModel, 'getById').resolves([]);
+
+        const product = await productsService.remove(999);
+
+        expect(product).to.be.an('object');
+        expect(product).to.have.all.keys(['type', 'message']);
+        expect(product).to.have.property('type', 'PRODUCT_NOT_FOUND');
+        expect(product).to.have.property('message', 'Product not found');
+      });
+
+      afterEach(function () {
+        sinon.restore();
       });
     });
   });
