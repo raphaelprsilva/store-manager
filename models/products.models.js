@@ -31,12 +31,16 @@ const create = async (productData) => {
 };
 
 const update = async (id, productData) => {
-  await connection.execute(
-    'UPDATE products SET name = ? WHERE id = ?',
-    [productData.name, id],
-  );
+  await connection.execute('UPDATE products SET name = ? WHERE id = ?', [
+    productData.name,
+    id,
+  ]);
 
   return { id: +id, name: productData.name };
+};
+
+const remove = async (id) => {
+  await connection.execute('DELETE FROM products WHERE id = ?', [id]);
 };
 
 module.exports = {
@@ -45,4 +49,5 @@ module.exports = {
   create,
   getByName,
   update,
+  remove,
 };
