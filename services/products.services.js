@@ -49,9 +49,22 @@ const update = async (id, productData) => {
   return { type: null, message: productUpdated };
 };
 
+const remove = async (id) => {
+  const productAlreadyExists = await productsModel.getById(id);
+
+  if (!productAlreadyExists.length) {
+    return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+  }
+
+  await productsModel.remove(id);
+
+  return { type: null, message: 'Product deleted' };
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
+  remove,
 };
