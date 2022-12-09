@@ -48,8 +48,38 @@ const getById = async (id) => {
   return { type: null, message: sale };
 };
 
+const update = async (id, sale) => {
+  const validationResult = validateRequestSalesSchema(sale);
+
+  if (validationResult.type) return validationResult;
+
+  const productsPromises = sale.map(async (s) => {
+    const [product] = await productsModel.getById(s.productId);
+    return product;
+  });
+  const productsCheck = await Promise.all(productsPromises);
+  const hasNotSomeProductInDb = productsCheck.some((p) => !p);
+
+  if (hasNotSomeProductInDb) {
+    return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+  }
+
+  const saleExists = await salesModel.getById(id);
+
+  if (!saleExists.length) {
+    return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
+  }
+
+  const salesPromise = sale.map((s) => salesModel.update(id, s));
+
+  await Promise.all(salesPromise);
+
+  return { type: null, message: { saleId: +id, itemsUpdated: sale } };
+};
+
 module.exports = {
   create,
   getAll,
   getById,
+  update,
 };
