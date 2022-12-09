@@ -134,6 +134,93 @@ describe('salesService unit tests', function () {
     });
   });
 
+  describe('update', function () {
+    it('should return an object with the sale data', async function () {
+      sinon.stub(salesModel, 'update').resolves([saleMock]);
+
+      const sale = await salesService.update(1, [
+        {
+          productId: 1,
+          quantity: 2,
+        },
+      ]);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', null);
+      expect(sale.message).to.be.deep.equal({
+        saleId: 1,
+        itemsUpdated: [
+          {
+            productId: 1,
+            quantity: 2,
+          },
+        ],
+      });
+    });
+
+    it('should return an object with error when product is not found', async function () {
+      sinon.stub(salesModel, 'update').resolves([saleMock]);
+
+      const sale = await salesService.update(1, [
+        {
+          productId: 130,
+          quantity: 2,
+        },
+      ]);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', 'PRODUCT_NOT_FOUND');
+      expect(sale.message).to.be.deep.equal('Product not found');
+    });
+
+    it('should return an object with the error message', async function () {
+      sinon.stub(salesModel, 'update').resolves(emptySalesMock);
+
+      const sale = await salesService.update(inexistentSaleId, [
+        {
+          productId: 1,
+          quantity: 2,
+        },
+      ]);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', 'SALE_NOT_FOUND');
+      expect(sale.message).to.be.deep.equal('Sale not found');
+    });
+
+    it('should return an object with the error message when productId is not given', async function () {
+      const sale = await salesService.update(1, [
+        {
+          quantity: 2,
+        },
+      ]);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', 'BAD_REQUEST');
+      expect(sale.message).to.be.deep.equal('"productId" is required');
+    });
+
+    it('should return an object with the error message when quantity is negative', async function () {
+      const sale = await salesService.update(1, [
+        {
+          productId: 1,
+          quantity: -2,
+        },
+      ]);
+
+      expect(sale).to.be.an('object');
+      expect(sale).to.have.all.keys(['type', 'message']);
+      expect(sale).to.have.property('type', 'INVALID_VALUE');
+      expect(sale.message).to.be.deep.equal(
+        '"quantity" must be greater than or equal to 1'
+      );
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
