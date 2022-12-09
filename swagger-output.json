@@ -1,0 +1,304 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Store Manager API",
+    "description": "This is the API for the Store Manager",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Welcome to the Store Manager API",
+        "tags": ["Welcome"],
+        "description": "This route is just to ensure that the API is working",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "get": {
+        "summary": "Get all products",
+        "tags": ["Products"],
+        "description": "This route get all products",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "summary": "Set new product",
+        "tags": ["Products"],
+        "description": "This route set a new product",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "required": true,
+                  "description": "Product Name",
+                  "example": "Capa de celular"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "summary": "Get product by id",
+        "tags": ["Products"],
+        "description": "This route get a product by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update product",
+        "tags": ["Products"],
+        "description": "This route updates a product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "required": true,
+                  "description": "Product Name",
+                  "example": "Capa de celular"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete product",
+        "tags": ["Products"],
+        "description": "This route deletes a product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/sales/": {
+      "post": {
+        "summary": "Set new sale",
+        "tags": ["Sales"],
+        "description": "This route set a new sale",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "required": true,
+                  "description": "Product ID",
+                  "example": 1
+                },
+                "quantity": {
+                  "type": "integer",
+                  "required": true,
+                  "description": "Product Quantity",
+                  "example": 2
+                }
+              },
+              "required": true,
+              "description": "Products",
+              "example": [
+                {
+                  "id": 1,
+                  "quantity": 2
+                },
+                {
+                  "id": 2,
+                  "quantity": 1
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all sales",
+        "tags": ["Sales"],
+        "description": "This route get all sales",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sales/{id}": {
+      "get": {
+        "summary": "Get sale by id",
+        "tags": ["Sales"],
+        "description": "This route get a sale by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update sale",
+        "tags": ["Sales"],
+        "description": "This route updates a sale",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "required": true,
+                  "description": "Product ID",
+                  "example": 1
+                },
+                "quantity": {
+                  "type": "integer",
+                  "required": true,
+                  "description": "Product Quantity",
+                  "example": 2
+                }
+              },
+              "required": true,
+              "description": "Products",
+              "example": [
+                {
+                  "id": 1,
+                  "quantity": 2
+                },
+                {
+                  "id": 2,
+                  "quantity": 1
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    }
+  }
+}
