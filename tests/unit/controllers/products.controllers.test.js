@@ -252,4 +252,55 @@ describe('productsController unit tests', function () {
       sinon.restore();
     });
   });
+
+  describe('remove', function () {
+    it('should return a response with status 204 and no content', async function () {
+      const req = {};
+      const res = {};
+
+      req.params = { id: 1 };
+      res.status = sinon.stub().returns(res);
+      res.end = sinon.stub().returns();
+
+      sinon.stub(productsService, 'remove').resolves({
+        type: null,
+        message: 'Product deleted',
+      });
+
+      await productsController.remove(req, res);
+
+      expect(res.status).to.have.been.calledWith(204);
+      expect(res.end).to.have.been.calledOnce;
+
+      sinon.restore();
+    });
+
+    it('should return a response with status 404 and a JSON with the error message', async function () {
+      const req = {};
+      const res = {};
+
+      req.params = { id: 42 };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsModel, 'getById').resolves(null);
+      sinon.stub(productsService, 'remove').resolves({
+        type: 'PRODUCT_NOT_FOUND',
+        message: 'Product not found',
+      });
+
+      await productsController.remove(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({
+        message: 'Product not found',
+      });
+
+      sinon.restore();
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
 });
